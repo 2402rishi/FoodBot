@@ -61,8 +61,6 @@ SEARCH_LIMIT = 7
 
 # Flask app should start in global layout
 app = Flask(__name__)
-
-
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
@@ -76,6 +74,7 @@ def webhook():
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
+    print ("Hello")
 
 
 def processRequest(req):
@@ -88,7 +87,7 @@ def processRequest(req):
                 yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
                 result = urlopen(yql_url).read()
                 data = json.loads(result)"""
-    res=query_api(req.get("result").get("Cuisine"),"NY")
+    res=query_api(req.get("result").get("parameters").get("Cuisine"),"NY")
     data=json.loads(res)
     data = makeWebhookResult(res)
     return data
@@ -224,9 +223,7 @@ def query_api(term, location):
 
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
-
-    print("Starting app on port %d" % port)
-
-    app.run(debug=False, port=port, host='0.0.0.0')
+    # port = int(os.getenv('PORT', 5000))
+    # print("Starting app on port %d" % port)
+    app.run(debug=True, host='0.0.0.0')
     
