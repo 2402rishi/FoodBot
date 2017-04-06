@@ -63,7 +63,8 @@ SEARCH_LIMIT = 7
 app = Flask(__name__)
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    req = request.get_json(silent=True, force=True)
+    req = request.get(silent=True, force=True)
+    req=json.dumps(req)
     print("Request:")
     print(json.dumps(req, indent=4))
 
