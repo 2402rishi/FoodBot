@@ -61,7 +61,11 @@ SEARCH_LIMIT = 7
 
 # Flask app should start in global layout
 app = Flask(__name__)
-@app.route('/webhook', methods=['POST'])
+@app.route('/')
+def hello():
+    result=make_response("Hello")
+    return result
+@app.route('/webhook', methods=['POST','GET'])
 def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
