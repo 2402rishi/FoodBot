@@ -74,7 +74,6 @@ def webhook():
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
-    print ("Hello")
 
 
 def processRequest(req):
@@ -89,12 +88,8 @@ def processRequest(req):
                 data = json.loads(result)"""
     res=query_api(req.get("result").get("parameters").get("Cuisine"),"NY")
     data=json.loads(res)
-    data = makeWebhookResult(res)
-    return data
-
-
-
-
+    z = makeWebhookResult(data)
+    return z
 
 def makeWebhookResult(data):
     result = data.get('name')
