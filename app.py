@@ -66,7 +66,6 @@ app = Flask(__name__)
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
-
     print("Request:")
     print(json.dumps(req, indent=4))
 
@@ -90,6 +89,7 @@ def processRequest(req):
                 result = urlopen(yql_url).read()
                 data = json.loads(result)"""
     res=query_api(req.get("result").get("cuisine"),"NY")
+    data=json.loads(res)
     data = makeWebhookResult(res)
     return data
 
