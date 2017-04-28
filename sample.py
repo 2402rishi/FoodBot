@@ -182,7 +182,7 @@ def main():
         sys.exit(
             'Encountered HTTP error {0} on {1}:\n {2}\nAbort program.'.format(
                 error.code,
-                error.url,
+                error.url,  
                 error.read(),
             )
         )

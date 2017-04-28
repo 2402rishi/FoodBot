@@ -70,7 +70,7 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
     print(json.dumps(req, indent=4))
-
+    print (req)
     res = processRequest(req)
 
     res = json.dumps(res, indent=4)
@@ -138,7 +138,7 @@ def obtain_bearer_token(host, path):
     return bearer_token
 
 
-def request(host, path, bearer_token, url_params=None):
+def request_from_yelp(host, path, bearer_token, url_params=None):
     """Given a bearer token, send a GET request to the API.
     Args:
         host (str): The domain host of the API.
@@ -177,7 +177,7 @@ def search(bearer_token, term, location):
         'location': location.replace(' ', '+'),
         'limit': SEARCH_LIMIT
     }
-    return request(API_HOST, SEARCH_PATH, bearer_token, url_params=url_params)
+    return request_from_yelp(API_HOST, SEARCH_PATH, bearer_token, url_params=url_params)
 
 
 def get_business(bearer_token, business_id):
@@ -189,7 +189,7 @@ def get_business(bearer_token, business_id):
     """
     business_path = BUSINESS_PATH + business_id
 
-    return request(API_HOST, business_path, bearer_token)
+    return request_from_yelp(API_HOST, business_path, bearer_token)
 
 
 def query_api(term, location):
@@ -225,4 +225,3 @@ if __name__ == '__main__':
     # port = int(os.getenv('PORT', 5000))
     # print("Starting app on port %d" % port)
     app.run()
-    
