@@ -3,15 +3,13 @@
 from __future__ import print_function
 from future.standard_library import install_aliases
 install_aliases()
-
+from flask import Flask
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
 
 import json
 import os
-
-from flask import Flask
 from flask import request
 from flask import make_response
 
@@ -68,13 +66,8 @@ def hello():
 @app.route('/webhook', methods=['POST','GET'])
 def webhook():
     req = request.get_json(silent=True, force=True)
-    print("Request:")
-    print(json.dumps(req, indent=4))
-    print (req)
     res = processRequest(req)
-
     res = json.dumps(res, indent=4)
-    # print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
@@ -91,19 +84,14 @@ def processRequest(req):
                 result = urlopen(yql_url).read()
                 data = json.loads(result)"""
     res=query_api(req.get("result").get("parameters").get("Cuisine"),"NY")
-    data=json.loads(res)
-    z = makeWebhookResult(data)
+    z = makeWebhookResult(res)
     return z
 
 def makeWebhookResult(data):
-    result = data.get('name')
+    result=data
     if result is None:
         return {}
-    speech = "Restaurants " + result 
-
-    print("Response:")
-    print(speech)
-
+    speech = result
     return {
         "speech": speech,
         "displayText": speech,
@@ -156,7 +144,6 @@ def request_from_yelp(host, path, bearer_token, url_params=None):
         'Authorization': 'Bearer %s' % bearer_token,
     }
 
-    print(u'Querying {0} ...'.format(url))
 
     response = requests.request('GET', url, headers=headers, params=url_params)
 
@@ -207,16 +194,17 @@ def query_api(term, location):
     if not businesses:
         print(u'No businesses for {0} in {1} found.'.format(term, location))
         return
+    final_result=''
+    for i in businesses:
+        business_id = i['id']
+        # print(u'{0} businesses found, querying business info ' \
+        # 'for the top result "{1}" ...'.format(
+        #     len(businesses), business_id))
+        response =get_business(bearer_token, business_id)
+        
 
-    business_id = businesses[0]['id']
-
-    print(u'{0} businesses found, querying business info ' \
-        'for the top result "{1}" ...'.format(
-            len(businesses), business_id))
-    response = get_business(bearer_token, business_id)
-
-    print(u'Result for business "{0}" found:'.format(business_id))
-    return response
+        # print(u'Result for business "{0}" found:'.format(business_id))
+    return ','.join([str(x['id']) for x in businesses])
 
 
 
